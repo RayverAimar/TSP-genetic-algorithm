@@ -1,7 +1,8 @@
 #include <iostream>
+#include "./include/utils.h"
 
-using namespace std;
+FLOAT_MATRIX distances = get_distances_matrix();
 
 int main(){
-    
+
 }
