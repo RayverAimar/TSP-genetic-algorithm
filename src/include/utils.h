@@ -13,6 +13,7 @@
 #define MAX_ITERATIONS                      500
 #define INITIAL_POPULATION                  32
 #define MUTATION_RATE                       0.0625
+#define MAX_RANDOM_VALUE                    33554432
 
 typedef std::vector<std::vector<float>>     FLOAT_MATRIX;
 typedef std::vector<float>                  FLOAT_VECTOR;
