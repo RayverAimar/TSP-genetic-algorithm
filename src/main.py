@@ -1,6 +1,7 @@
 import networkx as nx
 import pandas as pd
 import matplotlib.pyplot as plt
+from math import sqrt
 
 N_NODES = 26
 INF = 1e7
@@ -48,13 +49,49 @@ def get_edges():
                     edges.append(cur_edge)
     return edges
 
-if __name__ == '__main__':
+def euclideanDistance(one, two):
+    """
+    Args:
+        one, two -> tuple (x, y)
+    Returns:
+        float: Distance between those two coordinates
+    """
+
+    result = 0.0
+    result += (((one[0] - two[0]) * (one[0] - two[0])) + ((one[1] - two[1]) * (one[1] - two[1])))
+    return sqrt(result)
+
+
+def export_distances(pos):
+    """
+    Args:
+        pos -> dict -> tuple (x, y)
+    Returns:
+        None
+    """
+    distances = {}
+
+    for i in range(N_NODES):
+        row = []
+        for j in range(N_NODES):
+            distance = euclideanDistance(pos[vertices[i]], pos[vertices[j]])
+            row.append(distance)
+        distances[vertices[i]] = row
+    df = pd.DataFrame(data=distances)
+    df.to_csv('../datasets/distances.csv', index = False, header=False)
+
+
+def main():
     graph = nx.Graph()
     pos = get_pos()
     edges = get_edges()
     graph.add_nodes_from(vertices)
     nx.set_node_attributes(graph, pos, "pos")
     graph.add_edges_from(edges)
+    export_distances(pos=pos)
 
-    nx.draw(graph, pos = pos, node_color = "#add8e6", with_labels = True)
+    nx.draw(graph, pos=pos, node_color = "#add8e6", with_labels = True)
     plt.show()
+
+if __name__ == '__main__':
+    main()
