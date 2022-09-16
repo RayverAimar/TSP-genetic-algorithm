@@ -4,9 +4,6 @@
 #include "./include/utils.h"
 #include "./include/genetic.h"
 
-
-FLOAT_MATRIX distances = get_distances_matrix();
-
 int main()
 {
     std::vector<string> population;
@@ -15,5 +12,10 @@ int main()
         population.push_back(get_individual('A'));
     
     cout << "Size: " << population.size() << '\n';
+    
+    std::string a = "ABECDA";
+    std::string b = "ADBCEA";
+
+    matching(a,b);
     return 0;
 }
