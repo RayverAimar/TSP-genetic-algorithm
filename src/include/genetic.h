@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <unordered_set>
+#include <algorithm>
 
 #include <stdlib.h>
 #include <time.h>
@@ -12,16 +13,14 @@ using std::cout;
 using std::string;
 using std::unordered_set;
 
-string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-
 void fast_random(unordered_set<char> &r, char beg)
 {
     int random_idx;
     while (r.size() != 25)
     {
         random_idx = rand() % 26;
-        if (alphabet[random_idx] != beg)
-            r.insert(alphabet[random_idx]);
+        if (get_node_name(random_idx) != beg)
+            r.insert(get_node_name(random_idx));
     }
 }
 
@@ -36,9 +35,9 @@ string get_individual(char beg)
     while (individual.size() != 26)
     {
         random_idx = rand() % 26;
-        if ((alphabet[random_idx] != beg) &&
-            (individual.find(alphabet[random_idx]) == string::npos))
-            individual.push_back(alphabet[random_idx]);
+        if ((get_node_name(random_idx) != beg) &&
+            (individual.find(get_node_name(random_idx)) == string::npos))
+            individual.push_back(get_node_name(random_idx));
     }
 
     individual.push_back(beg);
@@ -46,7 +45,7 @@ string get_individual(char beg)
     return individual;
 }
 
-void matching(std::string genomeA, std::string genomeB)
+void crossover(const std::string &genomeA, const std::string &genomeB)
 {
     srand ((unsigned) time(NULL));
 
@@ -59,18 +58,21 @@ void matching(std::string genomeA, std::string genomeB)
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
 
-    std::cout << random_number << std::endl;
+    std::cout << "Random number chosen: " << random_number << std::endl;
 
-    for(int f = lsb, i = 1; i < genomeA.size() - 1; f--, i++){
+    for(int f = lsb, i = 1; i < genomeA.size() - 1; f--, i++)
+    {
         char to_push_genomeA = ' ', to_push_genomeB = ' ';
         int mask = 1 << f;
-        if(mask & random_number){
+        if(mask & random_number)
+        {
             to_push_genomeA = genomeB[i];
             to_push_genomeB = genomeA[i];
         }
-        else{
-            missing_genomeA.push_back(genomeA[i]);
-            missing_genomeB.push_back(genomeB[i]);
+        else
+        {
+            missing_genomeB.push_back(genomeA[i]);
+            missing_genomeA.push_back(genomeB[i]);
         }
         matched_genomeA.push_back(to_push_genomeA);
         matched_genomeB.push_back(to_push_genomeB);
@@ -79,12 +81,27 @@ void matching(std::string genomeA, std::string genomeB)
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
 
-    std::cout<<matched_genomeA<<std::endl;
-    std::cout<<matched_genomeB<<std::endl;
+    std::reverse(missing_genomeA.begin(), missing_genomeA.end());
+    std::reverse(missing_genomeB.begin(), missing_genomeB.end());
 
-    std::cout<<missing_genomeA<<std::endl;
-    std::cout<<missing_genomeB<<std::endl;
+    std::cout << matched_genomeA << std::endl;
+    std::cout << matched_genomeB << std::endl;
+
+    std::cout << "Missing cromosomes for matched genome A: " << missing_genomeA << std::endl;
+    std::cout << "Missing cromosomes for matched genome B: " << missing_genomeB << std::endl;
 
 }
+
+float get_fitness_value(const std::string &genome, const FLOAT_MATRIX &distances){
+    float total_distance = 0;
+    for(int i = 0; i < genome.size() - 1; i++){
+        int from, to;
+        from = get_node_id(genome[i]);
+        to = get_node_id(genome[i + 1]);
+        total_distance = distances[from][to];
+    }
+    return total_distance;
+}
+
 
 #endif //__GENETIC_H__
