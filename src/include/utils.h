@@ -8,8 +8,11 @@
 #include <iostream>
 #include <cstring>
 
-#define DISTANCES_PATH "../datasets/distances.csv"
-#define N_NODES 26
+#define DISTANCES_PATH                      "../datasets/distances.csv"
+#define N_NODES                             26
+#define MAX_ITERATIONS                      500
+#define INITIAL_POPULATION                  32
+#define MUTATION_RATE                       0.0625
 
 typedef std::vector<std::vector<float>>     FLOAT_MATRIX;
 typedef std::vector<float>                  FLOAT_VECTOR;
