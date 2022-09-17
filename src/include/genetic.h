@@ -5,13 +5,17 @@
 #include <string>
 #include <unordered_set>
 #include <algorithm>
-
 #include <stdlib.h>
 #include <time.h>
+#include <vector>
+
+#include "./utils.h"
 
 using std::cout;
 using std::string;
 using std::unordered_set;
+
+FLOAT_MATRIX distances = get_distances_matrix();
 
 void fast_random(unordered_set<char> &r, char beg)
 {
@@ -43,6 +47,10 @@ string get_individual(char beg)
     individual.push_back(beg);
 
     return individual;
+}
+
+void insert_missing_cromosomes(std::string matched_genomeA){
+
 }
 
 void crossover(const std::string &genomeA, const std::string &genomeB)
@@ -81,8 +89,20 @@ void crossover(const std::string &genomeA, const std::string &genomeB)
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
 
-    std::reverse(missing_genomeA.begin(), missing_genomeA.end());
-    std::reverse(missing_genomeB.begin(), missing_genomeB.end());
+    //std::reverse(missing_genomeA.begin(), missing_genomeA.end());
+    //std::reverse(missing_genomeB.begin(), missing_genomeB.end());
+
+    int cur_id = 0;
+
+    for(int i = 0;  i < matched_genomeA.size(); i++)
+    {
+        if(matched_genomeA[i] == ' ')
+        {
+            matched_genomeA[i] = missing_genomeA[cur_id];
+            cur_id++;
+        }
+    }
+
 
     std::cout << matched_genomeA << std::endl;
     std::cout << matched_genomeB << std::endl;
@@ -92,7 +112,8 @@ void crossover(const std::string &genomeA, const std::string &genomeB)
 
 }
 
-float get_fitness_value(const std::string &genome, const FLOAT_MATRIX &distances){
+float get_fitness_value(const std::string &genome)
+{
     float total_distance = 0;
     for(int i = 0; i < genome.size() - 1; i++){
         int from, to;
@@ -101,6 +122,35 @@ float get_fitness_value(const std::string &genome, const FLOAT_MATRIX &distances
         total_distance = distances[from][to];
     }
     return total_distance;
+}
+
+
+void population_selection(const std::vector<std::string> &population)
+{
+    
+    std::vector<std::string> selected_genomes;
+    
+    for(int i = 0; i < population.size(); i+=2)
+    {
+        float value_first_genome, value_second_genome;
+        value_first_genome = get_fitness_value(population[i]);
+        value_second_genome = get_fitness_value(population[i + 1]);
+        
+        string selected_genome = population[i];
+        
+        if(value_first_genome < value_second_genome)
+            selected_genome = population[i + 1];
+        
+        selected_genomes.push_back(selected_genome);
+
+    }
+}
+
+void population_crossover(std::vector<std::string>& selected_genomes)
+{
+    for(int i = 0; i < selected_genomes.size(); i+=2)
+        crossover(selected_genomes[i], selected_genomes[i + 1]);
+    
 }
 
 

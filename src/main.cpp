@@ -4,7 +4,6 @@
 #include "./include/utils.h"
 #include "./include/genetic.h"
 
-FLOAT_MATRIX distances = get_distances_matrix();
 
 int main()
 {
@@ -24,7 +23,7 @@ int main()
     crossover(a,b);
 
 
-    std::cout << get_fitness_value(b, distances);
+    std::cout << get_fitness_value(b);
 
     return 0;
 }
