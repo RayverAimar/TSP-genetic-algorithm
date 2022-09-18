@@ -7,23 +7,18 @@
 
 int main()
 {
-    std::vector<string> population;
+    std::vector<std::string> population, selected_genomes;
     
-    for (int i = 0; i < INITIAL_POPULATION; ++i)
+    population = get_initial_population();
+    
+    for(int i = 0; i < MAX_ITERATIONS; i++)
     {
-        population.push_back(get_individual('A'));
-        //std::cout << population[i] << std::endl;
+        selected_genomes = population_selection(population);
+        //Missing some elitism function
+        population_crossover(selected_genomes);
+        population_mutation(selected_genomes);
+        population = refill_population(selected_genomes);
     }
-    
-    cout << "Size: " << population.size() << '\n';
-    
-    std::string a = "ABGEFHCDA";
-    std::string b = "ADHBCGEFA";
-
-    crossover(a,b);
-
-
-    std::cout << get_fitness_value(b);
 
     return 0;
 }
