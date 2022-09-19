@@ -1,12 +1,12 @@
 #ifndef __UTILS_H__
 #define __UTILS_H__
 
-
 #include <vector>
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <cstring>
+#include <string>
 
 #define DISTANCES_PATH                      "../datasets/distances.csv"
 #define N_NODES                             26
@@ -17,6 +17,8 @@
 
 typedef std::vector<std::vector<float>>     FLOAT_MATRIX;
 typedef std::vector<float>                  FLOAT_VECTOR;
+typedef std::string                         GENOME;
+typedef std::vector<GENOME>                 POPULATION;
 
 FLOAT_MATRIX get_distances_matrix()
 {
@@ -24,7 +26,7 @@ FLOAT_MATRIX get_distances_matrix()
     FLOAT_MATRIX distances;
     
     std::ifstream file(DISTANCES_PATH);
-    std::string line;
+    GENOME line;
 
     while(std::getline(file, line))
     {
