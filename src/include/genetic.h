@@ -1,24 +1,16 @@
 #ifndef __GENETIC_H__
 #define __GENETIC_H__
 
-#include <iostream>
-#include <string>
 #include <unordered_set>
-#include <algorithm>
 #include <stdlib.h>
 #include <time.h>
-#include <vector>
 #include <utility>
 
 #include "./utils.h"
 
-using std::cout;
-using std::string;
-using std::unordered_set;
-
 FLOAT_MATRIX distances = get_distances_matrix();
 
-void fast_random(unordered_set<char> &r, char beg)
+void fast_random(std::unordered_set<char> &r, char beg)
 {
     int random_idx;
     while (r.size() != 25)
@@ -29,9 +21,9 @@ void fast_random(unordered_set<char> &r, char beg)
     }
 }
 
-string get_individual(char beg)
+GENOME get_individual(char beg)
 {
-    string individual;
+    GENOME individual;
 
     int random_idx;
 
@@ -41,7 +33,7 @@ string get_individual(char beg)
     {
         random_idx = rand() % 26;
         if ((get_node_name(random_idx) != beg) &&
-            (individual.find(get_node_name(random_idx)) == string::npos))
+            (individual.find(get_node_name(random_idx)) == GENOME::npos))
             individual.push_back(get_node_name(random_idx));
     }
 
@@ -50,9 +42,9 @@ string get_individual(char beg)
     return individual;
 }
 
-std::vector<std::string> get_initial_population()
+POPULATION get_initial_population()
 {
-    std::vector<std::string> population;
+    POPULATION population;
     
     for (int i = 0; i < INITIAL_POPULATION; ++i)
     {
@@ -62,9 +54,9 @@ std::vector<std::string> get_initial_population()
     return population;
 }
 
-std::vector<std::string> refill_population(const std::vector<std::string> &selected_genomes)
+POPULATION refill_population(const POPULATION &selected_genomes)
 {
-    std::vector<std::string> full_population;
+    POPULATION full_population;
 
     for(int i = 0; i < selected_genomes.size(); i++){
         full_population.push_back(get_individual('A'));
@@ -75,7 +67,7 @@ std::vector<std::string> refill_population(const std::vector<std::string> &selec
 }
 
 
-void insert_missing_cromosomes(std::string &genome, std::string &matched_genome, std::vector<bool> &missing){
+void insert_missing_cromosomes(GENOME &genome, GENOME &matched_genome, std::vector<bool> &missing){
 
     for(int i = 0;  i < matched_genome.size(); i++)
     {
@@ -94,10 +86,10 @@ void insert_missing_cromosomes(std::string &genome, std::string &matched_genome,
     }
 }
 
-void crossover(std::string &genomeA, std::string &genomeB)
+void crossover(GENOME &genomeA, GENOME &genomeB)
 {
     int lsb;
-    std::string matched_genomeA, matched_genomeB;
+    GENOME matched_genomeA, matched_genomeB;
     std::vector<bool> missing_cromosomes_A(N_NODES, 0);
     std::vector<bool> missing_cromosomes_B(N_NODES, 0);
 
@@ -106,8 +98,6 @@ void crossover(std::string &genomeA, std::string &genomeB)
 
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
-
-    //std::cout << "Random number chosen: " << random_number << std::endl;
 
     for(int f = lsb, i = 1; i < genomeA.size() - 1; f--, i++)
     {
@@ -137,7 +127,7 @@ void crossover(std::string &genomeA, std::string &genomeB)
     genomeB = matched_genomeB;
 }
 
-float get_fitness_value(const std::string &genome)
+float get_fitness_value(const GENOME &genome)
 {
     float total_distance = 0;
     for(int i = 0; i < genome.size() - 1; i++){
@@ -156,69 +146,61 @@ void generate_two_random_numbers(int &first_number, int &second_number, int lowe
     }while(second_number == first_number);
 }
 
-void swap_characters(string &genomeA, int first_idx, int second_idx)
+void swap_characters(GENOME &genomeA, int first_idx, int second_idx)
 {
     char temp = genomeA[first_idx];
     genomeA[first_idx] = genomeA[second_idx];
     genomeA[second_idx] = temp;
 }
 
-std::vector<std::string> population_selection(const std::vector<std::string> &population)
+POPULATION population_selection(const POPULATION &population, float &mean_fitness_value)
 {
-    
-    std::vector<std::string> selected_genomes;
-    
+    mean_fitness_value = 0.0f;
+    POPULATION selected_genomes;
     for(int i = 0; i < population.size(); i+=2)
     {
         float value_first_genome, value_second_genome;
         value_first_genome = get_fitness_value(population[i]);
         value_second_genome = get_fitness_value(population[i + 1]);
-        //std::cout << value_first_genome << std::endl;
-        //std::cout << value_second_genome << std::endl;
-
-        string selected_genome = population[i];
-        
+        mean_fitness_value += value_first_genome;
+        mean_fitness_value += value_second_genome;
+        GENOME selected_genome = population[i];
         if(value_first_genome > value_second_genome)
             selected_genome = population[i + 1];
-
-        //std::cout << "Chosen genome: " << get_fitness_value(selected_genome) << std::endl;
-        
         selected_genomes.push_back(selected_genome);
     }
+
+    mean_fitness_value /= population.size();
 
     return selected_genomes;
 
 }
 
-void population_crossover(std::vector<std::string>& selected_genomes)
+void population_crossover(POPULATION& selected_genomes)
 {
     for(int i = 0; i < selected_genomes.size(); i+=2)
     {
-        //std::cout << selected_genomes[i] << " " << selected_genomes[i + 1] << std::endl;
-        //std::cout << get_fitness_value(selected_genomes[i]) << " " << get_fitness_value(selected_genomes[i + 1]) << std::endl;
         crossover(selected_genomes[i], selected_genomes[i + 1]);
-        //std::cout << selected_genomes[i] << " " << selected_genomes[i + 1] << std::endl;
-        //std::cout << get_fitness_value(selected_genomes[i]) << " " << get_fitness_value(selected_genomes[i + 1]) << std::endl;
     }
-    
 }
 
-void population_mutation(std::vector<std::string>& selected_genomes){
+void population_mutation(POPULATION& selected_genomes){
 
     for(int i = 0; i < selected_genomes.size(); i++)
     { 
-        bool mutation = (rand() % 100) < (100 * MUTATION_RATE);
+        int random_number = (rand() % 100);
+        bool mutation = random_number < (100 * MUTATION_RATE);
         if(!mutation) continue;
         int first_random_idx, second_random_idx;
-        generate_two_random_numbers(first_random_idx, second_random_idx, 1, N_NODES - 2);
+        generate_two_random_numbers(first_random_idx, second_random_idx, 1, N_NODES - 1);
         swap_characters(selected_genomes[i], first_random_idx, second_random_idx);
     }
     
 }
 
-std::pair<float, std::string> get_best_genome(const std::vector<std::string> &selected_genomes)
+std::pair<float, GENOME> get_best_genome(const POPULATION &selected_genomes)
 {
-    std::pair<float, std::string> best_genome = std::make_pair(get_fitness_value(selected_genomes[0]), selected_genomes[0]);
+    std::pair<float, GENOME> best_genome = std::make_pair(get_fitness_value(selected_genomes[0]), selected_genomes[0]);
     for(int i = 1; i < selected_genomes.size(); i++){
         float cur_genome_fitness_value = get_fitness_value(selected_genomes[i]);
         if(cur_genome_fitness_value < best_genome.first)
@@ -227,6 +209,21 @@ std::pair<float, std::string> get_best_genome(const std::vector<std::string> &se
         }
     }
     return best_genome;
+}
+
+void elitism_handler(   std::pair<float, GENOME> &best_genome_last_generation,
+                        std::pair<float, GENOME> &best_genome_cur_generation,
+                        POPULATION& selected_genomes
+                    )
+{
+    if(best_genome_cur_generation.first > best_genome_last_generation.first)
+    {
+        selected_genomes[0] = best_genome_last_generation.second;
+    }
+    else
+    {
+        best_genome_last_generation = best_genome_cur_generation;
+    }
 }
 
 #endif //__GENETIC_H__
