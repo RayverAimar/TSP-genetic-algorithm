@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <vector>
+#include <utility>
 
 #include "./utils.h"
 
@@ -74,23 +75,31 @@ std::vector<std::string> refill_population(const std::vector<std::string> &selec
 }
 
 
-void insert_missing_cromosomes(std::string &matched_genomeA, const std::string &missing_genomeA){
-    int cur_id = 0;
+void insert_missing_cromosomes(std::string &genome, std::string &matched_genome, std::vector<bool> &missing){
 
-    for(int i = 0;  i < matched_genomeA.size(); i++)
+    for(int i = 0;  i < matched_genome.size(); i++)
     {
-        if(matched_genomeA[i] == ' ')
+        if(matched_genome[i] == ' ')
         {
-            matched_genomeA[i] = missing_genomeA[cur_id];
-            cur_id++;
+            for(int j = 0; j < genome.size(); j++)
+            {
+                if (missing[get_node_id(genome[j])])
+                {
+                    matched_genome[i] = genome[j];
+                    missing[get_node_id(genome[j])] = false;
+                    break;
+                }
+            }
         }
     }
 }
 
-void crossover(std::string &genomeA, std::string &genomeB) //Missing full implementation
+void crossover(std::string &genomeA, std::string &genomeB)
 {
     int lsb;
-    std::string matched_genomeA, matched_genomeB, missing_genomeA, missing_genomeB;
+    std::string matched_genomeA, matched_genomeB;
+    std::vector<bool> missing_cromosomes_A(N_NODES, 0);
+    std::vector<bool> missing_cromosomes_B(N_NODES, 0);
 
     int random_number = rand() % MAX_RANDOM_VALUE;
     lsb = genomeA.size() - 2;
@@ -98,7 +107,7 @@ void crossover(std::string &genomeA, std::string &genomeB) //Missing full implem
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
 
-    std::cout << "Random number chosen: " << random_number << std::endl;
+    //std::cout << "Random number chosen: " << random_number << std::endl;
 
     for(int f = lsb, i = 1; i < genomeA.size() - 1; f--, i++)
     {
@@ -111,8 +120,8 @@ void crossover(std::string &genomeA, std::string &genomeB) //Missing full implem
         }
         else
         {
-            missing_genomeB.push_back(genomeA[i]);
-            missing_genomeA.push_back(genomeB[i]);
+            missing_cromosomes_A[get_node_id(genomeB[i])] = true;
+            missing_cromosomes_B[get_node_id(genomeA[i])] = true;
         }
         matched_genomeA.push_back(to_push_genomeA);
         matched_genomeB.push_back(to_push_genomeB);
@@ -121,15 +130,11 @@ void crossover(std::string &genomeA, std::string &genomeB) //Missing full implem
     matched_genomeA.push_back(genomeA[0]);
     matched_genomeB.push_back(genomeB[0]);
 
-    insert_missing_cromosomes(matched_genomeA, missing_genomeA);
-    insert_missing_cromosomes(matched_genomeB, missing_genomeB);
+    insert_missing_cromosomes(genomeA, matched_genomeA, missing_cromosomes_A);
+    insert_missing_cromosomes(genomeB, matched_genomeB, missing_cromosomes_B);
 
-    std::cout << "matched_genomeA: " << matched_genomeA << std::endl;
-    std::cout << "matched_genomeB: " << matched_genomeB << std::endl;
-    
     genomeA = matched_genomeA;
     genomeB = matched_genomeB;
-
 }
 
 float get_fitness_value(const std::string &genome)
@@ -168,11 +173,15 @@ std::vector<std::string> population_selection(const std::vector<std::string> &po
         float value_first_genome, value_second_genome;
         value_first_genome = get_fitness_value(population[i]);
         value_second_genome = get_fitness_value(population[i + 1]);
-        
+        //std::cout << value_first_genome << std::endl;
+        //std::cout << value_second_genome << std::endl;
+
         string selected_genome = population[i];
         
-        if(value_first_genome < value_second_genome)
+        if(value_first_genome > value_second_genome)
             selected_genome = population[i + 1];
+
+        //std::cout << "Chosen genome: " << get_fitness_value(selected_genome) << std::endl;
         
         selected_genomes.push_back(selected_genome);
     }
@@ -185,31 +194,39 @@ void population_crossover(std::vector<std::string>& selected_genomes)
 {
     for(int i = 0; i < selected_genomes.size(); i+=2)
     {
+        //std::cout << selected_genomes[i] << " " << selected_genomes[i + 1] << std::endl;
+        //std::cout << get_fitness_value(selected_genomes[i]) << " " << get_fitness_value(selected_genomes[i + 1]) << std::endl;
         crossover(selected_genomes[i], selected_genomes[i + 1]);
+        //std::cout << selected_genomes[i] << " " << selected_genomes[i + 1] << std::endl;
+        //std::cout << get_fitness_value(selected_genomes[i]) << " " << get_fitness_value(selected_genomes[i + 1]) << std::endl;
     }
     
 }
 
 void population_mutation(std::vector<std::string>& selected_genomes){
-    //According to a mutation rate
 
     for(int i = 0; i < selected_genomes.size(); i++)
-    {
-        
+    { 
         bool mutation = (rand() % 100) < (100 * MUTATION_RATE);
-
         if(!mutation) continue;
-
         int first_random_idx, second_random_idx;
-
         generate_two_random_numbers(first_random_idx, second_random_idx, 1, N_NODES - 2);
-
         swap_characters(selected_genomes[i], first_random_idx, second_random_idx);
     }
-
+    
 }
 
-
-
+std::pair<float, std::string> get_best_genome(const std::vector<std::string> &selected_genomes)
+{
+    std::pair<float, std::string> best_genome = std::make_pair(get_fitness_value(selected_genomes[0]), selected_genomes[0]);
+    for(int i = 1; i < selected_genomes.size(); i++){
+        float cur_genome_fitness_value = get_fitness_value(selected_genomes[i]);
+        if(cur_genome_fitness_value < best_genome.first)
+        {
+            best_genome = std::make_pair(cur_genome_fitness_value, selected_genomes[i]);
+        }
+    }
+    return best_genome;
+}
 
 #endif //__GENETIC_H__
