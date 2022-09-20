@@ -128,6 +128,7 @@ def main():
     plt.title("Current Graph")
     plt.show()
     plot_best_path(graph, pos)
+    plot_graphs_mins_BFV()
 
 if __name__ == '__main__':
     main()
