@@ -31,5 +31,7 @@
 *.out
 *.app
 
+# Others
 .vscode
 __pycache__/
+*.txt

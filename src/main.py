@@ -92,6 +92,30 @@ def plot_best_path(graph, pos):
     plt.title("Best Path")
     plt.show()
 
+def plot_graphs_mins_BFV():
+    means_y = []
+    df_means = pd.read_csv("../datasets/means.txt", index_col = None)
+
+    for i in df_means.index:
+        means_y.append(df_means["label"][i])
+
+    best_fitness_values_y = []
+    df_best_fitness_values = pd.read_csv("../datasets/best_fitness_values.txt", index_col = None)
+
+    for i in df_best_fitness_values.index:
+        best_fitness_values_y.append(df_best_fitness_values["label"][i])
+
+    plt.title ("Graphics TSP Genetic Algorithm")
+    plt.xlabel("Iterations")
+    plt.ylabel("Lengths")
+
+    plt.plot(means_y, c = "dodgerblue", label = "Means", marker = "o")
+    plt.plot(best_fitness_values_y, c = "midnightblue", label = "BFV", marker = "o")
+
+    plt.legend(title = "Legend")
+
+    plt.show()
+
 def main():
     graph = nx.Graph()
     pos = get_pos()
