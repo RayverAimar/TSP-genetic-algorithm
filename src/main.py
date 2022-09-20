@@ -82,23 +82,12 @@ def export_distances(pos):
 
 def plot_best_path(graph, pos):
     visited_edges = []
-    path_edges = []
-    path = []
     df = pd.read_csv("../datasets/edges_best_path.csv", index_col = None)
-    
     for i in df.index:
         visited_edges.append((df["from"][i], df["to"][i]))
-    df = pd.read_csv("../datasets/nodes_best_path.csv", index_col = None)
-    for i in df.index:
-        path.append(df["label"][i])
-    last = path[0]
-    for i in path:
-        path_edges.append((last, i))
-        last = i
-
-    nx.draw_networkx_nodes(graph, pos, nodelist=path,node_color="yellow", node_size=210)
  
-    nx.draw_networkx_edges(graph, pos, edgelist=visited_edges, edge_color="red", node_size=210, width=1, style = "dashed")
+    nx.draw_networkx(G = graph, pos = pos, with_labels = True, edgelist = visited_edges, edge_color = "red", node_size = 400, width =3, style = "dashed")
+
     plt.axis("off")
     plt.title("Best Path")
     plt.show()
@@ -110,11 +99,10 @@ def main():
     graph.add_nodes_from(vertices)
     nx.set_node_attributes(graph, pos, "pos")
     graph.add_edges_from(edges)
-    export_distances(pos=pos)
-
+    #export_distances(pos=pos)
     nx.draw(graph, pos=pos, node_color = "#add8e6", with_labels = True)
+    plt.title("Current Graph")
     plt.show()
-
     plot_best_path(graph, pos)
 
 if __name__ == '__main__':
