@@ -80,6 +80,28 @@ def export_distances(pos):
     df = pd.DataFrame(data=distances)
     df.to_csv('../datasets/distances.csv', index = False, header=False)
 
+def plot_best_path(graph, pos):
+    visited_edges = []
+    path_edges = []
+    path = []
+    df = pd.read_csv("../datasets/edges_best_path.csv", index_col = None)
+    
+    for i in df.index:
+        visited_edges.append((df["from"][i], df["to"][i]))
+    df = pd.read_csv("../datasets/nodes_best_path.csv", index_col = None)
+    for i in df.index:
+        path.append(df["label"][i])
+    last = path[0]
+    for i in path:
+        path_edges.append((last, i))
+        last = i
+
+    nx.draw_networkx_nodes(graph, pos, nodelist=path,node_color="yellow", node_size=210)
+ 
+    nx.draw_networkx_edges(graph, pos, edgelist=visited_edges, edge_color="red", node_size=210, width=1, style = "dashed")
+    plt.axis("off")
+    plt.title("Best Path")
+    plt.show()
 
 def main():
     graph = nx.Graph()
@@ -92,6 +114,8 @@ def main():
 
     nx.draw(graph, pos=pos, node_color = "#add8e6", with_labels = True)
     plt.show()
+
+    plot_best_path(graph, pos)
 
 if __name__ == '__main__':
     main()

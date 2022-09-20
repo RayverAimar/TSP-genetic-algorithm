@@ -53,5 +53,28 @@ int get_node_id(char name)
     return int(name) - 65;
 }
 
+void export_best_path(GENOME genome)
+{
+    std::string name_best_path = "../datasets/nodes_best_path.csv";
+    std::string name_edges = "../datasets/edges_best_path.csv";
+    std::ofstream path(name_best_path);
+    std::ofstream edges(name_edges);
+
+    path << "label\n";
+    edges << "from,to\n";
+
+    for(int i = 0; i < genome.size(); i++)
+    {
+        path << genome[i] << "\n";
+    }
+
+    for(int i = 0; i < genome.size() - 1; i++)
+    {
+        edges << genome[i] << "," << genome[i+1] << "\n";
+    }
+
+    path.close();
+    edges.close();
+}
 
 #endif //__UTILS_H__

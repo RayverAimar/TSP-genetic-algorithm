@@ -13,7 +13,7 @@ int main()
     best_genome_last_generation = get_best_genome(population);
     std::cout << "[Before] Best path length " << best_genome_last_generation.first << "\n[Before] Best genome: "<< best_genome_last_generation.second << std::endl;
 
-    for(int i = 0; i < MAX_ITERATIONS; i++)
+    for(int i = 0; i < 10000; i++)
     {
         selected_genomes = population_selection(population, mean_fitness_value);
         means.push_back(mean_fitness_value);
@@ -28,6 +28,8 @@ int main()
     std::cout << "[After] Best path length " << best_genome_cur_generation.first << "\n[After] Best genome: "<< best_genome_cur_generation.second << std::endl;
     std::cout << "[Delta] Means: " << means[0] << " -> " << means[means.size() - 1] << std::endl;
     std::cout << "[Delta] Best Fitness Value: " << best_fitness_values[0] << " -> " << best_fitness_values[best_fitness_values.size() - 1] << std::endl;
+
+    export_best_path(best_genome_cur_generation.second);
 
     return 0;
 }
