@@ -134,7 +134,7 @@ float get_fitness_value(const GENOME &genome)
         int from, to;
         from = get_node_id(genome[i]);
         to = get_node_id(genome[i + 1]);
-        total_distance = distances[from][to];
+        total_distance += distances[from][to];
     }
     return total_distance;
 }
