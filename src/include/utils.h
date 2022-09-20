@@ -53,5 +53,20 @@ int get_node_id(char name)
     return int(name) - 65;
 }
 
+void export_float_vector(FLOAT_VECTOR float_vector, std::string name)
+{
+    std::string path = "../datasets/" + name + ".txt";
+
+    std::ofstream out_file(path, std::ios::out);
+    
+    out_file << "label" << '\n';
+    for (int idx = 0; idx < float_vector.size(); ++idx)
+    {
+        out_file << float_vector[idx];
+
+        if ( idx + 1 < float_vector.size() )
+            out_file << '\n';
+    }
+}
 
 #endif //__UTILS_H__

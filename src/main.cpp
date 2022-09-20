@@ -29,5 +29,8 @@ int main()
     std::cout << "[Delta] Means: " << means[0] << " -> " << means[means.size() - 1] << std::endl;
     std::cout << "[Delta] Best Fitness Value: " << best_fitness_values[0] << " -> " << best_fitness_values[best_fitness_values.size() - 1] << std::endl;
 
+    export_float_vector(means, "means");
+    export_float_vector(best_fitness_values, "best_fitness_values");
+
     return 0;
 }
