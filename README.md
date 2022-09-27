@@ -14,9 +14,9 @@ $ pip install tk
 
 After compiling c++ file:
 
-'''
+```
 $ g++ -o main.exe main.cpp
-'''
+```
 
 We have to run them as normally (by the way, this project doesn't make use of setups):
 
@@ -29,11 +29,19 @@ You'll get a first window of node's connections, then you'll see a second one sh
 
 ![Console Answer](https://media.discordapp.net/attachments/1024168441462128751/1024168686518538390/Annotation_2022-09-26_225009.png)
 
+Console Answer
+
 ![First Window, the full graph](https://media.discordapp.net/attachments/1024168441462128751/1024168657124860024/Annotation_2022-09-26_225025.png)
+
+First Window, the full graph.
 
 ![Second Window, the Best Path](https://media.discordapp.net/attachments/1024168441462128751/1024168635159289867/Annotation_2022-09-26_225017.png)
 
+Second Window, the Best Path.
+
 ![The last Window, the chart](https://media.discordapp.net/attachments/1024168441462128751/1024168586731847730/Annotation_2022-09-26_225031.png)
+
+The last Window, the chart.
 
 ---
 ### Contributors
