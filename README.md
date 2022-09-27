@@ -27,13 +27,13 @@ $ ./main.py
 
 You'll get a first window of node's connections, then you'll see a second one showing the best path after the application of the Genetic Algorithm. And finally, you'll have a a graphic representation about the best genome and the means through generations.
 
-![Console Answer](https://ibb.co/bLNF4Ms)
+![Console Answer](https://media.discordapp.net/attachments/1024168441462128751/1024168686518538390/Annotation_2022-09-26_225009.png)
 
-![First Window, the full graph](https://ibb.co/K0J5FCm)
+![First Window, the full graph](https://media.discordapp.net/attachments/1024168441462128751/1024168657124860024/Annotation_2022-09-26_225025.png)
 
-![Second Window, the Best Path](https://ibb.co/MRxc4JZ)
+![Second Window, the Best Path](https://media.discordapp.net/attachments/1024168441462128751/1024168635159289867/Annotation_2022-09-26_225017.png)
 
-![The last Window, the chart](https://ibb.co/FKFRR3y)
+![The last Window, the chart](https://media.discordapp.net/attachments/1024168441462128751/1024168586731847730/Annotation_2022-09-26_225031.png)
 
 ---
 ### Contributors
