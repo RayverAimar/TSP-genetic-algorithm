@@ -15,7 +15,6 @@ Install them like this if you haven't before .
 
 ```
 $ pip install matplotlib
-
 ```
 
 ### Running the project
