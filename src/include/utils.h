@@ -14,11 +14,13 @@
 #define INITIAL_POPULATION 32
 #define MUTATION_RATE 0.0625
 #define MAX_RANDOM_VALUE 33554432
+#define MAX_ELITISM 10
 
 typedef std::vector<std::vector<float>> FLOAT_MATRIX;
 typedef std::vector<float> FLOAT_VECTOR;
 typedef std::string GENOME;
 typedef std::vector<GENOME> POPULATION;
+typedef std::vector<std::pair<float, GENOME>> ELITE_VECTOR;
 
 FLOAT_MATRIX get_distances_matrix()
 {

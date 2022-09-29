@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <utility>
+#include <algorithm>
 
 #include "./utils.h"
 
@@ -198,32 +199,38 @@ void population_mutation(POPULATION& selected_genomes){
     
 }
 
-std::pair<float, GENOME> get_best_genome(const POPULATION &selected_genomes)
+ELITE_VECTOR get_best_genomes(const POPULATION &selected_genomes)
 {
-    std::pair<float, GENOME> best_genome = std::make_pair(get_fitness_value(selected_genomes[0]), selected_genomes[0]);
-    for(int i = 1; i < selected_genomes.size(); i++){
-        float cur_genome_fitness_value = get_fitness_value(selected_genomes[i]);
-        if(cur_genome_fitness_value < best_genome.first)
-        {
-            best_genome = std::make_pair(cur_genome_fitness_value, selected_genomes[i]);
-        }
+    ELITE_VECTOR elite;
+    float cur_genome_fitness_value;
+
+    for(int i = 0; i < selected_genomes.size(); i++)
+    {
+        cur_genome_fitness_value = get_fitness_value(selected_genomes[i]);
+        elite.push_back(std::make_pair(cur_genome_fitness_value, selected_genomes[i]));
     }
-    return best_genome;
+
+    std::sort(elite.begin(), elite.end());
+    
+    return ELITE_VECTOR (elite.begin(), elite.begin() + MAX_ELITISM);
 }
 
-void elitism_handler(   std::pair<float, GENOME> &best_genome_last_generation,
-                        std::pair<float, GENOME> &best_genome_cur_generation,
+void elitism_handler(   ELITE_VECTOR& best_genome_last_generation,
+                        ELITE_VECTOR& best_genome_cur_generation,
                         POPULATION& selected_genomes
                     )
 {
-    if(best_genome_cur_generation.first > best_genome_last_generation.first)
-    {
-        selected_genomes[0] = best_genome_last_generation.second;
-    }
-    else
-    {
-        best_genome_last_generation = best_genome_cur_generation;
-    }
+    ELITE_VECTOR all_elite(best_genome_last_generation);
+    all_elite.insert(all_elite.end(), best_genome_cur_generation.begin(), best_genome_cur_generation.end());
+
+    std::sort(all_elite.begin(), all_elite.end());
+
+    best_genome_last_generation.clear();
+
+    best_genome_last_generation.insert(best_genome_last_generation.begin(), all_elite.begin(), all_elite.begin() + MAX_ELITISM);
+
+    for (int i = 0, j = 0; i < MAX_ELITISM; ++i, ++j)
+        selected_genomes[j] = best_genome_last_generation[i].second;
 }
 
 #endif //__GENETIC_H__
