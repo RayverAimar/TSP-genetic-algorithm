@@ -56,11 +56,15 @@ POPULATION get_initial_population()
 
 POPULATION refill_population(const POPULATION &selected_genomes)
 {
-    POPULATION full_population;
+    // Duplicate the selected pool to refill back to INITIAL_POPULATION and
+    // shuffle so the next pairwise tournament compares different parents.
+    POPULATION full_population = selected_genomes;
+    full_population.insert(full_population.end(), selected_genomes.begin(), selected_genomes.end());
 
-    for(int i = 0; i < selected_genomes.size(); i++){
-        full_population.push_back(get_individual('A'));
-        full_population.push_back(selected_genomes[i]);
+    for (size_t i = full_population.size() - 1; i > 0; --i)
+    {
+        size_t j = rand() % (i + 1);
+        std::swap(full_population[i], full_population[j]);
     }
 
     return full_population;
