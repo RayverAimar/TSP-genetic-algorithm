@@ -148,8 +148,8 @@ Two parents survived selection: `P1 = A B C D E F A` and `P2 = A F E D C B A`. T
 
 ```
 mask = 1 0 1 1 0
-        ↑ ↑ ↑ ↑ ↑
-        slot 1..5 of the child
+       ↑ ↑ ↑ ↑ ↑
+       slot 1..5 of the child
 ```
 
 For each interior slot:
@@ -184,7 +184,7 @@ With probability `MUTATION_RATE = 0.0625`, swap two random interior cities. Say 
 
 ```
 before: A F E D C B A         length 19
-swap:       ↑       ↑
+swap:       ↑     ↑
 after:  A F B D C E A
 length = 3 + 5 + 7 + 3 + 2 + 6 = 26
 ```
