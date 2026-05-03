@@ -35,3 +35,10 @@
 .vscode
 __pycache__/
 *.txt
+
+# GA run artifacts (regenerated on every ./main)
+datasets/edges_best_path.csv
+datasets/nodes_best_path.csv
+
+# Compiled binary
+src/main
